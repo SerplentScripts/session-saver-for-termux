@@ -13,7 +13,7 @@ fs.readdir(cssFolder, (err, files) => {
     const filePath = path.join(cssFolder, file);
     let content = fs.readFileSync(filePath, 'utf-8');
     // Portu ekle:
-    content = content.replace(/http:\/\/localhost\//g, 'http://localhost:8000/');
+    content = content.replace(/http:\/\/localhost\//g, 'http://192.168.1.105:8000/');
     fs.writeFileSync(filePath, content, 'utf-8');
     console.log(`Updated ${file}`);
   });
