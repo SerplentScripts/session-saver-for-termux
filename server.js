@@ -4,6 +4,21 @@ const path = require('path');
 const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 
+
+const cssFolder = path.join(__dirname, 'public/app.css');
+
+fs.readdir(cssFolder, (err, files) => {
+  if (err) throw err;
+  files.filter(f => f.endsWith('.css')).forEach(file => {
+    const filePath = path.join(cssFolder, file);
+    let content = fs.readFileSync(filePath, 'utf-8');
+    // Portu ekle:
+    content = content.replace(/http:\/\/localhost\//g, 'http://localhost:8000/');
+    fs.writeFileSync(filePath, content, 'utf-8');
+    console.log(`Updated ${file}`);
+  });
+});
+
 const app = express();
 const PORT = 8000;
 
