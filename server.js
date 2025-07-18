@@ -5,7 +5,7 @@ const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 
 
-const cssFolder = path.join(__dirname, 'public/app.css');
+const cssFolder = path.join(__dirname, 'public');
 
 fs.readdir(cssFolder, (err, files) => {
   if (err) throw err;
