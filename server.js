@@ -5,18 +5,19 @@ const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 
 const app = express();
+
+// Statik dosyaları "public" klasöründen sun
 app.use(express.static("public"));
 
-app.get('/', (req, res)=>{
-    var options = {
-        root: path.join(__dirname)
-    };
-    res.sendFile(`index.html`, options)
-})
-
-app.listen(8000, ()=>{
-    console.log('listening at http://localhost/');
+// Kök URL isteğinde "public/index.html" dosyasını gönder
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.listen(8000, () => {
+    console.log('listening at http://localhost:8000/');
+});
+
 
 const wss = new WebSocket.Server({ port: 8080 }, () => {
     console.log('session saver started');
