@@ -12,12 +12,15 @@ fs.readdir(cssFolder, (err, files) => {
   files.filter(f => f.endsWith('.css')).forEach(file => {
     const filePath = path.join(cssFolder, file);
     let content = fs.readFileSync(filePath, 'utf-8');
-    // Portu ekle:
-    content = content.replace(/http:\/\/localhost\//g, 'http://192.168.1.105:8000/');
+
+    // localhost:8000'i IP adresi ile değiştir
+    content = content.replace(/http:\/\/localhost:8000\//g, 'http://192.168.1.105:8000/');
+
     fs.writeFileSync(filePath, content, 'utf-8');
     console.log(`Updated ${file}`);
   });
 });
+
 
 const app = express();
 const PORT = 8000;
