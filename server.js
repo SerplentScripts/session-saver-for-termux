@@ -14,7 +14,7 @@ app.get('/', (req, res)=>{
     res.sendFile(`index.html`, options)
 })
 
-app.listen(80, ()=>{
+app.listen(8000, ()=>{
     console.log('listening at http://localhost/');
 });
 
