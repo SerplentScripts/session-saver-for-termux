@@ -5,18 +5,25 @@ const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 
 const app = express();
+const PORT = 8000;
 
-// Statik dosyaları "public" klasöründen sun
-app.use(express.static("public"));
+// public klasörünü statik olarak sun
+app.use(express.static(path.join(__dirname, "public")));
 
-// Kök URL isteğinde "public/index.html" dosyasını gönder
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// index.html ve wasm dosyasını doğrudan sun
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(8000, () => {
-    console.log('listening at http://localhost:8000/');
+app.get("/zombs_wasm.wasm", (req, res) => {
+    res.sendFile(path.join(__dirname, "zombs_wasm.wasm"));
 });
+
+// Sunucuyu başlat
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+
 
 
 const wss = new WebSocket.Server({ port: 8080 }, () => {
