@@ -19,7 +19,7 @@ function getLocalIP() {
 const localIP = getLocalIP();
 
 // Doğrudan /app.css dosyası
-const filePath = '/app.css';
+const filePath = '/public/app.css';
 
 if (fs.existsSync(filePath)) {
   let content = fs.readFileSync(filePath, 'utf-8');
@@ -1513,6 +1513,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
