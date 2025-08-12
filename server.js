@@ -6,9 +6,10 @@ const WebSocket = require("ws");
 
 const os = require('os');
 
-const cssFolder = path.join(__dirname, 'css');
+const fs = require('fs');
+const path = require('path');
 
-// Local IP'yi bul
+const cssFolder = path.join(__dirname, 'public'); // public klasörü
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
@@ -24,7 +25,10 @@ function getLocalIP() {
 const localIP = getLocalIP();
 
 fs.readdir(cssFolder, (err, files) => {
-  if (err) throw err;
+  if (err) {
+    console.error(`Klasör bulunamadı: ${cssFolder}`);
+    return;
+  }
 
   files
     .filter(f => f.endsWith('.css'))
@@ -32,7 +36,6 @@ fs.readdir(cssFolder, (err, files) => {
       const filePath = path.join(cssFolder, file);
       let content = fs.readFileSync(filePath, 'utf-8');
 
-      // http://localhost[:port]/ → http://<localIP>[:port]/
       content = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
         return `http://${localIP}${port || ''}/`;
       });
@@ -41,7 +44,6 @@ fs.readdir(cssFolder, (err, files) => {
       console.log(`Updated ${file} -> IP: ${localIP}`);
     });
 });
-
 
 
 
@@ -1519,6 +1521,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
