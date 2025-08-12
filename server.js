@@ -3,12 +3,7 @@ const express = require('express');
 const path = require('path');
 const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
-
 const os = require('os');
-
-const fs = require('fs');
-const path = require('path');
-
 const cssFolder = path.join(__dirname, 'public'); // public klasörü
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
@@ -1521,6 +1516,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
