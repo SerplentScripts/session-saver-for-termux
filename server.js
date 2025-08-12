@@ -4,8 +4,6 @@ const path = require('path');
 const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 const os = require('os');
-
-
 function getLocalIP() {
   const nets = os.networkInterfaces();
   for (const name of Object.keys(nets)) {
@@ -20,32 +18,25 @@ function getLocalIP() {
 
 const localIP = getLocalIP();
 
-function processFolder(folderPath) {
-  const entries = fs.readdirSync(folderPath, { withFileTypes: true });
+// Doğrudan /app.css dosyası
+const filePath = '/app.css';
 
-  for (const entry of entries) {
-    const fullPath = path.join(folderPath, entry.name);
+if (fs.existsSync(filePath)) {
+  let content = fs.readFileSync(filePath, 'utf-8');
 
-    if (entry.isDirectory()) {
-      processFolder(fullPath); // Alt klasöre gir
-    } else if (entry.isFile() && entry.name.endsWith('.css')) {
-      let content = fs.readFileSync(fullPath, 'utf-8');
+  const newContent = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
+    return `http://${localIP}${port || ''}/`;
+  });
 
-      const newContent = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
-        return `http://${localIP}${port || ''}/`;
-      });
-
-      if (newContent !== content) {
-        fs.writeFileSync(fullPath, newContent, 'utf-8');
-        console.log(`Updated ${fullPath} -> IP: ${localIP}`);
-      }
-    }
+  if (newContent !== content) {
+    fs.writeFileSync(filePath, newContent, 'utf-8');
+    console.log(`Updated ${filePath} -> IP: ${localIP}`);
+  } else {
+    console.log('No changes needed.');
   }
+} else {
+  console.error('File not found:', filePath);
 }
-
-// Çalışma dizini (script’in bulunduğu klasör)
-const startFolder = __dirname;
-processFolder(startFolder);
 
 
 const app = express();
@@ -1522,6 +1513,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
