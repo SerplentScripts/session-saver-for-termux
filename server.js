@@ -6,6 +6,24 @@ const WebSocket = require("ws");
 
 
 const cssFolder = path.join(__dirname, 'public');
+const os = require('os');
+
+const cssFolder = path.join(__dirname, 'css');
+
+// Local IP'yi bul
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return '127.0.0.1'; // fallback
+}
+
+const localIP = getLocalIP();
 
 fs.readdir(cssFolder, (err, files) => {
   if (err) throw err;
@@ -13,13 +31,14 @@ fs.readdir(cssFolder, (err, files) => {
     const filePath = path.join(cssFolder, file);
     let content = fs.readFileSync(filePath, 'utf-8');
 
-    // localhost:8000'i IP adresi ile değiştir
-    content = content.replace(/http:\/\/localhost\//g, 'http://192.168.1.105:8000/');
+    // localhost:8000'i local IP ile değiştir
+    content = content.replace(/http:\/\/localhost(:\d+)?\//g, `http://${localIP}$1/`);
 
     fs.writeFileSync(filePath, content, 'utf-8');
-    console.log(`Updated ${file}`);
+    console.log(`Updated ${file} -> IP: ${localIP}`);
   });
 });
+
 
 
 const app = express();
@@ -1496,3 +1515,4 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
