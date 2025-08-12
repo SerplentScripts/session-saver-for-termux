@@ -4,8 +4,6 @@ const path = require('path');
 const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 
-
-const cssFolder = path.join(__dirname, 'public');
 const os = require('os');
 
 const cssFolder = path.join(__dirname, 'css');
@@ -1515,4 +1513,5 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
