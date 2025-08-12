@@ -25,17 +25,23 @@ const localIP = getLocalIP();
 
 fs.readdir(cssFolder, (err, files) => {
   if (err) throw err;
-  files.filter(f => f.endsWith('.css')).forEach(file => {
-    const filePath = path.join(cssFolder, file);
-    let content = fs.readFileSync(filePath, 'utf-8');
 
-    // localhost:8000'i local IP ile değiştir
-    content = content.replace(/http:\/\/localhost(:\d+)?\//g, `http://${localIP}$1/`);
+  files
+    .filter(f => f.endsWith('.css'))
+    .forEach(file => {
+      const filePath = path.join(cssFolder, file);
+      let content = fs.readFileSync(filePath, 'utf-8');
 
-    fs.writeFileSync(filePath, content, 'utf-8');
-    console.log(`Updated ${file} -> IP: ${localIP}`);
-  });
+      // http://localhost[:port]/ → http://<localIP>[:port]/
+      content = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
+        return `http://${localIP}${port || ''}/`;
+      });
+
+      fs.writeFileSync(filePath, content, 'utf-8');
+      console.log(`Updated ${file} -> IP: ${localIP}`);
+    });
 });
+
 
 
 
@@ -1513,5 +1519,6 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
