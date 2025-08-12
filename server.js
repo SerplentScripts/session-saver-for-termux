@@ -16,7 +16,7 @@ fs.readdir(cssFolder, (err, files) => {
     content = content.replace(/http:\/\/localhost\//g, 'http://192.168.1.102:8000/');
 
     fs.writeFileSync(filePath, content, 'utf-8');
-    console.log(Updated ${file});
+    console.log(file);
   });
 });
 
@@ -1494,6 +1494,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
