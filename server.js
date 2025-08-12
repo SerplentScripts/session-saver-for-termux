@@ -6,15 +6,16 @@ const WebSocket = require("ws");
 const os = require('os');
 const cssFolder = path.join(__dirname, 'public'); // public klasörü
 function getLocalIP() {
-  const interfaces = os.networkInterfaces();
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // IPv4, dahili olmayan ve local ağ IP'si olan adresi bul
+      if (net.family === 'IPv4' && !net.internal && net.address.startsWith('192.168.')) {
+        return net.address;
       }
     }
   }
-  return '127.0.0.1'; // fallback
+  return '127.0.0.1'; // Bulamazsa localhost döner
 }
 
 const localIP = getLocalIP();
@@ -1516,6 +1517,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
