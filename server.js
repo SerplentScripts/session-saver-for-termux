@@ -4,21 +4,43 @@ const path = require('path');
 const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 const os = require('os');
-const cssFolder = path.join(__dirname, 'public'); // public klasörü
 
-fs.readdir(cssFolder, (err, files) => {
-  if (err) throw err;
-  files.filter(f => f.endsWith('.css')).forEach(file => {
-    const filePath = path.join(cssFolder, file);
-    let content = fs.readFileSync(filePath, 'utf-8');
+function getLocalIP() {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal && net.address.startsWith('192.168.')) {
+        return net.address;
+      }
+    }
+  }
+  return '127.0.0.1'; // Eğer bulunamazsa
+}
 
-    // localhost:8000'i IP adresi ile değiştir
-    content = content.replace(/http:\/\/localhost\//g, 'http://192.168.1.102:8000/');
+const localIP = getLocalIP();
+const currentFolder = __dirname;
 
-    fs.writeFileSync(filePath, content, 'utf-8');
-    console.log(file);
-  });
+fs.readdir(currentFolder, (err, files) => {
+  if (err) {
+    console.error(`Klasör okunamadı: ${currentFolder}`);
+    return;
+  }
+
+  files
+    .filter(f => f.endsWith('.css'))
+    .forEach(file => {
+      const filePath = path.join(currentFolder, file);
+      let content = fs.readFileSync(filePath, 'utf-8');
+
+      content = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
+        return `http://${localIP}${port || ''}/`;
+      });
+
+      fs.writeFileSync(filePath, content, 'utf-8');
+      console.log(`Updated ${file} -> IP: ${localIP}`);
+    });
 });
+
 
 const app = express();
 const PORT = 8000;
