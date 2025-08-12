@@ -5,6 +5,7 @@ const ByteBuffer = require("bytebuffer");
 const WebSocket = require("ws");
 const os = require('os');
 
+
 function getLocalIP() {
   const nets = os.networkInterfaces();
   for (const name of Object.keys(nets)) {
@@ -14,32 +15,37 @@ function getLocalIP() {
       }
     }
   }
-  return '127.0.0.1'; // Eğer bulunamazsa
+  return '127.0.0.1';
 }
 
 const localIP = getLocalIP();
-const currentFolder = __dirname;
 
-fs.readdir(currentFolder, (err, files) => {
-  if (err) {
-    console.error(`Klasör okunamadı: ${currentFolder}`);
-    return;
-  }
+function processFolder(folderPath) {
+  const entries = fs.readdirSync(folderPath, { withFileTypes: true });
 
-  files
-    .filter(f => f.endsWith('.css'))
-    .forEach(file => {
-      const filePath = path.join(currentFolder, file);
-      let content = fs.readFileSync(filePath, 'utf-8');
+  for (const entry of entries) {
+    const fullPath = path.join(folderPath, entry.name);
 
-      content = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
+    if (entry.isDirectory()) {
+      processFolder(fullPath); // Alt klasöre gir
+    } else if (entry.isFile() && entry.name.endsWith('.css')) {
+      let content = fs.readFileSync(fullPath, 'utf-8');
+
+      const newContent = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
         return `http://${localIP}${port || ''}/`;
       });
 
-      fs.writeFileSync(filePath, content, 'utf-8');
-      console.log(`Updated ${file} -> IP: ${localIP}`);
-    });
-});
+      if (newContent !== content) {
+        fs.writeFileSync(fullPath, newContent, 'utf-8');
+        console.log(`Updated ${fullPath} -> IP: ${localIP}`);
+      }
+    }
+  }
+}
+
+// Çalışma dizini (script’in bulunduğu klasör)
+const startFolder = __dirname;
+processFolder(startFolder);
 
 
 const app = express();
@@ -1516,6 +1522,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
