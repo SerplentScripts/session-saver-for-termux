@@ -24,7 +24,7 @@ const filePath = path.join(__dirname, 'public', 'app.css');
 if (fs.existsSync(filePath)) {
   let content = fs.readFileSync(filePath, 'utf-8');
 
-  const newContent = content.replace(/http:\/\/localhost(:\d+)?\//g, (match, port) => {
+  const newContent = content.replace(/http:\/\/192.168.1.105(:\d+)?\//g, (match, port) => {
     return `http://${localIP}${port || ''}/`;
   });
 
@@ -1513,6 +1513,7 @@ const wasmmodule = () => {
 
 
 let codec = new BinCodec();
+
 
 
 
